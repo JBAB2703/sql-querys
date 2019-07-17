@@ -4,4 +4,5 @@ select CONCAT (Lastname, ', ', Firstname) as'Name', Description, FORMAT(Salary, 
 from Employee
 join Job
 	on jobid = job.id
+--where Description = 'VP'
 order by job.salary desc, name desc
