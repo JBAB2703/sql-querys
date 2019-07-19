@@ -43,7 +43,7 @@ Select * from bootcamps;
 ALTER TABLE Students  --Alter Table example; each Alter Table is one statement
 	Add  BootcampId int null
 		foreign key references Bootcamps(Id);
-*/
+
 select * from students
 select * from bootcamps
 
@@ -56,5 +56,55 @@ UPDATE Students
 	SET BootcampId = (Select id from Bootcamps where description like '%net%')
 	Where Lastname <> 'Doe';
 
+
+Create Table Assessments
+(
+	Id int not null primary key identity(1,1),
+	Technology nvarchar(50) not null,
+	NbrQuestions int not null default 10
+);
+
+INSERT into Assessments (Technology, NbrQuestions) VALUES ('Git', 5);
+INSERT into Assessments (Technology, NbrQuestions) VALUES ('SQL', 10);
+INSERT into Assessments (Technology, NbrQuestions) VALUES ('C#', 10);
+INSERT into Assessments (Technology, NbrQuestions) VALUES ('JavaScript', 10);
+INSERT into Assessments (Technology, NbrQuestions) VALUES ('Angular', 10);
+
+
+
+CREATE TABLE AssessmentScores (
+	Id int not null primary key identity(1,1),
+	StudentId int not null foreign key references Students(Id),
+	AssessmentsId int not null foreign key references Assessments(Id),
+	NbrCorrect int not null 
+
+
+);
+
+
+INSERT into AssessmentScores (StudentId, AssessmentsId, NbrCorrect) Values (1, 1, 6) --Git Score
+INSERT into AssessmentScores (StudentId, AssessmentsId, NbrCorrect) Values (1, 2, 9) --SQL Score
+INSERT into AssessmentScores (StudentId, AssessmentsId, NbrCorrect) Values (1, 3, 10) --C#/Java Score
+INSERT into AssessmentScores (StudentId, AssessmentsId, NbrCorrect) Values (1, 4, 7) --JS Score
+INSERT into AssessmentScores (StudentId, AssessmentsId, NbrCorrect) Values (1, 5, 11) --NG Score
+*/
+
+Select CONCAT(Lastname, ',', Firstname) as 'Name', Description as 'Bootcamp', 
+			Technology as 'Assessment', NbrCorrect, NbrQuestions, 
+			CAST(((CAST(NbrCorrect as decimal) / CAST(NbrQuestions as decimal))*100) as int) as 'Score'
+			--CAST is a way of formatting numbers. In this case it works from inside the parens outward. Because of the division operator 
+			--you get a decimal and CAST will help us take that number from a decimal to an integer
+	from Students s
+	join AssessmentScores sc
+		on s.id = sc.studentid
+	join Assessments a
+		on a.Id = sc.assessmentsID
+	join Bootcamps b
+		on b.Id = s.bootcampID
+where s.id = 1;
+
+select * from Assessments
+select * from students
+select * from bootcamps
 
 
